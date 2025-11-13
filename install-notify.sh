@@ -68,8 +68,15 @@ echo "🚀 Запуск: $COMMAND"
 echo "⏰ Час початку: $START_TIME_HUMAN"
 
 TEMP_OUTPUT=$(mktemp)
-"$@" 2>&1 | tee "$TEMP_OUTPUT"
-EXIT_CODE=${PIPESTATUS[0]}
+
+# Для команд, що потребують TTY (sudo, ssh тощо), зберігаємо доступ до терміналу
+if [ -e /dev/tty ]; then
+    "$@" < /dev/tty 2>&1 | tee "$TEMP_OUTPUT"
+    EXIT_CODE=${PIPESTATUS[0]}
+else
+    "$@" 2>&1 | tee "$TEMP_OUTPUT"
+    EXIT_CODE=${PIPESTATUS[0]}
+fi
 
 END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
