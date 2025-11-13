@@ -84,6 +84,25 @@ source ~/.bashrc  # or source ~/.zshrc
 notify <command> [arguments...]
 ```
 
+### Important Note for Fish Shell Users
+
+Fish shell expands wildcards (`*`) differently than bash/zsh. When using commands with wildcards in arguments (like `--exclude=*.log`), you need to quote them:
+
+**Wrong (will cause error):**
+```bash
+notify sudo rsync --exclude=/home/user/qemu/* /source /dest
+```
+
+**Correct (use quotes):**
+```bash
+notify sudo rsync --exclude='/home/user/qemu/*' /source /dest
+```
+
+Or escape the wildcards:
+```bash
+notify sudo rsync --exclude=/home/user/qemu/\* /source /dest
+```
+
 ### Examples
 
 **Simple command:**
@@ -104,6 +123,15 @@ notify sudo apt update && sudo apt upgrade -y
 **Backup:**
 ```bash
 notify sudo rsync -av --delete /home /mnt/backup
+```
+
+**Backup with exclusions (Fish shell - use quotes):**
+```bash
+notify sudo rsync --progress -aAXHv --delete \
+  --exclude='{"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"}' \
+  --exclude='/home/gerero/qemu/*' \
+  --exclude='/var/lib/libvirt/images/*' \
+  / /mnt/backup/
 ```
 
 **Project compilation:**
