@@ -1,30 +1,30 @@
-# Notify - Telegram уведомления о завершении команд
+# Notify - Telegram Command Completion Notifications
 
-Утилита для выполнения команд с автоматической отправкой уведомлений о результате в Telegram.
+A utility for executing commands with automatic result notifications sent to Telegram.
 
-## Возможности
+## Features
 
-- Выполнение любых команд с автоматическим уведомлением в Telegram
-- Отображение статуса выполнения (успешно/ошибка)
-- Показ времени выполнения команды
-- Вывод последних 10 строк результата
-- Поддержка интерактивных команд (sudo, ssh и т.д.)
+- Execute any command with automatic Telegram notifications
+- Display execution status (success/error)
+- Show command execution time
+- Output last 10 lines of result
+- Support for interactive commands (sudo, ssh, etc.)
 
-## Быстрая установка
+## Quick Installation
 
-### Удаленная установка (рекомендуется)
+### Remote Installation (recommended)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/KMakarevych/notify/refs/heads/main/install-notify.sh | bash
 ```
 
-или с использованием wget:
+or using wget:
 
 ```bash
 wget -qO- https://raw.githubusercontent.com/KMakarevych/notify/refs/heads/main/install-notify.sh | bash
 ```
 
-### Локальная установка
+### Local Installation
 
 ```bash
 git clone https://github.com/KMakarevych/notify.git
@@ -32,142 +32,142 @@ cd notify
 ./install-notify.sh
 ```
 
-## Настройка
+## Configuration
 
-### 1. Создание Telegram бота
+### 1. Creating a Telegram Bot
 
-1. Откройте [@BotFather](https://t.me/BotFather) в Telegram
-2. Отправьте команду `/newbot`
-3. Следуйте инструкциям для создания бота
-4. Сохраните полученный токен (выглядит как `123456789:ABCdefGHIjklMNOpqrsTUVwxyz`)
+1. Open [@BotFather](https://t.me/BotFather) in Telegram
+2. Send the `/newbot` command
+3. Follow the instructions to create your bot
+4. Save the token you receive (looks like `123456789:ABCdefGHIjklMNOpqrsTUVwxyz`)
 
-### 2. Получение Chat ID
+### 2. Getting Your Chat ID
 
-1. Откройте [@userinfobot](https://t.me/userinfobot) в Telegram
-2. Отправьте любое сообщение
-3. Бот вернет ваш Chat ID (число, например `123456789`)
+1. Open [@userinfobot](https://t.me/userinfobot) in Telegram
+2. Send any message
+3. The bot will return your Chat ID (a number, e.g., `123456789`)
 
-### 3. Конфигурация notify
+### 3. Configuring notify
 
-Отредактируйте конфигурационный файл:
+Edit the configuration file:
 
 ```bash
 nano ~/.config/notify/config
 ```
 
-Замените значения на свои:
+Replace the values with your own:
 
 ```bash
-TELEGRAM_BOT_TOKEN="ваш_токен_бота"
-TELEGRAM_CHAT_ID="ваш_chat_id"
+TELEGRAM_BOT_TOKEN="your_bot_token"
+TELEGRAM_CHAT_ID="your_chat_id"
 ```
 
-### 4. Добавление в PATH (если требуется)
+### 4. Adding to PATH (if required)
 
-Если при установке было предупреждение о PATH, добавьте в `~/.bashrc` или `~/.zshrc`:
+If you received a PATH warning during installation, add to `~/.bashrc` or `~/.zshrc`:
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-Затем перезагрузите конфигурацию:
+Then reload the configuration:
 
 ```bash
-source ~/.bashrc  # или source ~/.zshrc
+source ~/.bashrc  # or source ~/.zshrc
 ```
 
-## Использование
+## Usage
 
-### Базовое использование
+### Basic Usage
 
 ```bash
-notify <команда> [аргументы...]
+notify <command> [arguments...]
 ```
 
-### Примеры
+### Examples
 
-**Простая команда:**
+**Simple command:**
 ```bash
 notify ls -la /home
 ```
 
-**Длительная операция:**
+**Long-running operation:**
 ```bash
 notify rsync -av /source /destination
 ```
 
-**Команда с sudo:**
+**Command with sudo:**
 ```bash
 notify sudo apt update && sudo apt upgrade -y
 ```
 
-**Резервное копирование:**
+**Backup:**
 ```bash
 notify sudo rsync -av --delete /home /mnt/backup
 ```
 
-**Компиляция проекта:**
+**Project compilation:**
 ```bash
 notify make build
 ```
 
-**Запуск тестов:**
+**Running tests:**
 ```bash
 notify npm test
 ```
 
-## Как это работает
+## How It Works
 
-1. `notify` запускает указанную команду
-2. Отображает вывод команды в реальном времени
-3. Сохраняет вывод во временный файл
-4. После завершения отправляет в Telegram сообщение с:
-   - Статусом выполнения (успех/ошибка)
-   - Именем хоста
-   - Полной командой
-   - Временем выполнения
-   - Последними 10 строками вывода
+1. `notify` executes the specified command
+2. Displays command output in real-time
+3. Saves output to a temporary file
+4. After completion, sends a Telegram message with:
+   - Execution status (success/error)
+   - Hostname
+   - Full command
+   - Execution time
+   - Last 10 lines of output
 
-## Особенности
+## Features
 
-### Поддержка sudo
+### Sudo Support
 
-Скрипт корректно работает с командами, требующими sudo. Вы сможете ввести пароль в терминале, и уведомление будет отправлено после завершения.
+The script works correctly with commands requiring sudo. You can enter the password in the terminal, and the notification will be sent after completion.
 
-### Код возврата
+### Exit Code
 
-`notify` возвращает тот же код завершения, что и выполненная команда. Это позволяет использовать его в скриптах:
+`notify` returns the same exit code as the executed command. This allows you to use it in scripts:
 
 ```bash
 if notify ./deploy.sh; then
-    echo "Деплой успешен"
+    echo "Deploy successful"
 else
-    echo "Деплой провалился"
+    echo "Deploy failed"
 fi
 ```
 
-### Конфиденциальность
+### Privacy
 
-Вывод команды сохраняется только локально и удаляется после отправки уведомления. В Telegram отправляются только последние 10 строк.
+Command output is saved only locally and deleted after sending the notification. Only the last 10 lines are sent to Telegram.
 
-## Удаление
+## Uninstallation
 
 ```bash
 rm -f ~/.local/bin/notify
 rm -rf ~/.config/notify
 ```
 
-## Требования
+## Requirements
 
 - Bash 4.0+
-- curl (для отправки сообщений в Telegram)
-- Доступ к интернету
+- curl (for sending messages to Telegram)
+- Internet access
 
-## Лицензия
+## License
 
 MIT
 
-## Поддержка
+## Support
 
-Если вы нашли баг или у вас есть предложение, создайте issue на GitHub:
+If you found a bug or have a suggestion, create an issue on GitHub:
 https://github.com/KMakarevych/notify/issues
